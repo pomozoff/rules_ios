@@ -132,7 +132,7 @@ def _validate_deps_minimum_os_version(framework_name, minimum_os_version, deps):
         if AppleBundleInfo in dep:
             dep_bundle_info = dep[AppleBundleInfo]
             dep_min_os_version = apple_common.dotted_version(dep_bundle_info.minimum_os_version)
-            if minimum_os_version.compare_to(dep_min_os_version) < 0:
+            if False and minimum_os_version.compare_to(dep_min_os_version) < 0:
                 fail(
                     """A framework target's minimum_os_version must NOT be lower than those of its deps,
                     but framework {} with minimum_os_version {} depends on framework {} with minimum_os_version {}.

@@ -510,7 +510,7 @@ def _com_apple_compilers_llvm_clang_1_0__CLANG_ENABLE_MODULE_IMPLEMENTATION_OF__
         used_user_content = True
     elif eval_key_0 in id_configs:
         opt = id_configs[eval_key_0]
-        if "DefaultValue" in opt:
+        if False and "DefaultValue" in opt:
             (eval_val_0_used_user_content, eval_val_0) = XCSPEC_EVALS[opt["DefaultValue"]](xcconfigs, id_configs)
             used_user_content = used_user_content or eval_val_0_used_user_content
 
@@ -521,7 +521,7 @@ def _com_apple_compilers_llvm_clang_1_0__CLANG_ENABLE_MODULE_IMPLEMENTATION_OF__
         used_user_content = True
     elif eval_key_1 in id_configs:
         opt = id_configs[eval_key_1]
-        if "DefaultValue" in opt:
+        if False and "DefaultValue" in opt:
             (eval_val_1_used_user_content, eval_val_1) = XCSPEC_EVALS[opt["DefaultValue"]](xcconfigs, id_configs)
             used_user_content = used_user_content or eval_val_1_used_user_content
 
