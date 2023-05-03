@@ -93,8 +93,9 @@ jobs:
         run: .github/workflows/xcode_select.sh
       - name: Build and Test
         run: |
-          # iOS tests
+          # iOS tests without bzlmod on Bazel 5
           bazelisk build \
+            --noexperimental_enable_bzlmod \
             --config=ci \
             --config=ios \
             --config=vfs \
@@ -155,8 +156,10 @@ jobs:
           git diff --exit-code
       - name: Check docs
         run: |
+          # TODO: stardoc doesn't currently support bzlmod: https://github.com/bazelbuild/stardoc/issues/117
           bazelisk run \
             --config=ci \
+            --noexperimental_enable_bzlmod \
             //docs
           git diff --exit-code docs
 
