@@ -560,6 +560,7 @@ def apple_library(name, library_tools = {}, export_private_headers = True, names
     tags = kwargs.pop("tags", [])
     tags_manual = tags if "manual" in tags else tags + _MANUAL
     platforms = kwargs.pop("platforms", None)
+    swift_deps = [] + kwargs.pop("swift_deps", [])
     private_deps = [] + kwargs.pop("private_deps", [])
     private_dep_names = []
     lib_names = []
@@ -820,7 +821,7 @@ def apple_library(name, library_tools = {}, export_private_headers = True, names
         hdrs = objc_hdrs,
         tags = _MANUAL,
         testonly = testonly,
-        deps = deps + private_deps + private_dep_names + lib_names + import_vfsoverlays,
+        deps = deps + swift_deps + private_deps + private_dep_names + lib_names + import_vfsoverlays,
     )
 
     framework_vfs_objc_copts = [
@@ -929,7 +930,7 @@ def apple_library(name, library_tools = {}, export_private_headers = True, names
         hdrs = objc_hdrs,
         tags = _MANUAL,
         testonly = testonly,
-        deps = deps + private_deps + private_dep_names + lib_names + import_vfsoverlays,
+        deps = deps + swift_deps + private_deps + private_dep_names + lib_names + import_vfsoverlays,
         #enable_framework_vfs = enable_framework_vfs
     )
 
@@ -946,7 +947,7 @@ def apple_library(name, library_tools = {}, export_private_headers = True, names
                 "@build_bazel_rules_ios//:virtualize_frameworks": framework_vfs_swift_copts,
                 "//conditions:default": framework_vfs_swift_copts if enable_framework_vfs else [],
             }) + additional_swift_copts,
-            deps = deps + private_deps + private_dep_names + lib_names + select({
+            deps = deps + swift_deps + private_deps + private_dep_names + lib_names + select({
                 "@build_bazel_rules_ios//:virtualize_frameworks": [framework_vfs_overlay_name_swift],
                 "//conditions:default": [framework_vfs_overlay_name_swift] if enable_framework_vfs else [],
             }),
@@ -1075,7 +1076,8 @@ def apple_library(name, library_tools = {}, export_private_headers = True, names
         lib_names = lib_names,
         import_vfsoverlays = import_vfsoverlays,
         transitive_deps = deps,
-        deps = lib_names + deps,
+        deps = lib_names + deps + swift_deps,
+        swift_deps = swift_deps,
         module_name = module_name,
         data = module_data,
         launch_screen_storyboard_name = launch_screen_storyboard_name,

@@ -103,12 +103,13 @@ def apple_framework(
     )
 
     framework_deps = []
+    swift_deps = kwargs.get("swift_deps", [])
 
     # Setup force loading here - only for direct deps / direct libs and when `link_dynamic` is set.
     force_load_name = name + ".force_load_direct_deps"
     force_load_direct_deps(
         name = force_load_name,
-        deps = kwargs.get("deps", []) + library.lib_names,
+        deps = kwargs.get("deps", []) + swift_deps + library.lib_names,
         should_force_load = framework_packaging_kwargs.get("link_dynamic", False),
         testonly = testonly,
         tags = ["manual"],
@@ -124,7 +125,7 @@ def apple_framework(
         environment_plist = environment_plist,
         transitive_deps = library.transitive_deps,
         vfs = library.import_vfsoverlays,
-        deps = framework_deps,
+        deps = framework_deps + library.swift_deps,
         platforms = platforms,
         private_deps = kwargs.get("private_deps", []),
         library_linkopts = library.linkopts,
@@ -1048,8 +1049,8 @@ def _apple_framework_packaging_impl(ctx):
     default_info = DefaultInfo(files = depset(out_files + bundle_outs.files.to_list()))
 
     objc_provider = objc_provider_utils.merge_objc_providers(
-        providers = [dep[apple_common.Objc] for dep in deps],
-        transitive = [dep[apple_common.Objc] for dep in transitive_deps],
+        providers = [dep[apple_common.Objc] for dep in deps if apple_common.Objc in dep],
+        transitive = [dep[apple_common.Objc] for dep in transitive_deps if apple_common.Objc in dep],
     )
     return [
         avoid_deps_info,
