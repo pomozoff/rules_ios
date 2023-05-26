@@ -1,0 +1,53 @@
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+load("//rules:framework.bzl", "apple_framework")
+load("//rules:test.bzl", "ios_unit_test")
+
+swift_library(
+    name = "SwiftLibrary",
+    module_name = "SwiftXCFramework",
+    srcs = glob(
+        ["SwiftLibrary/**/*.swift"],
+    ),
+)
+
+minimum_os_version = "12.0"
+
+apple_framework(
+    name = "MixedSourceFramework",
+    srcs = glob(
+        include = [
+            "MixedSourceFramework/**/*.h",
+            "MixedSourceFramework/**/*.m",
+            "MixedSourceFramework/**/*.swift",
+        ],
+        # Cannot be excluded since the swift compiler is hard-coded to refer to a header with the same name as
+        # the module when generating the -Swift.h header
+        # exclude = ["MixedSourceFramework/MixedSourceFramework.h"],
+    ),
+    deps = [
+        ":SwiftLibrary"
+    ],
+    visibility = ["//visibility:public"],
+)
+
+apple_framework(
+    name = "MixedSourceTestLib",
+    testonly = True,
+    srcs = glob(
+        [
+            "MixedSourceTest/**/*.h",
+            "MixedSourceTest/**/*.m",
+            "MixedSourceTest/**/*.swift",
+        ],
+    ),
+    visibility = ["//visibility:public"],
+    deps = [
+        ":MixedSourceFramework",
+    ],
+)
+
+ios_unit_test(
+    name = "MixedSourceTest",
+    minimum_os_version = minimum_os_version,
+    deps = [":MixedSourceTestLib"],
+)
